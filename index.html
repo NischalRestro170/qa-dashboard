@@ -38,6 +38,7 @@ input, select { width:100%; padding:4px; font-size:12px; }
   <button onclick="exportCSV()">Export</button>
 
   <button onclick="setFilter('all',this)" class="active">All</button>
+  <button onclick="setFilter('In PR',this)">Staging Only</button>
   <button onclick="setFilter('staging',this)">Staging Only</button>
   <button onclick="setFilter('prod',this)">In Prod</button>
   <button onclick="setFilter('blocked',this)">Blocked</button>
@@ -91,6 +92,7 @@ function setFilter(type, btn){
 
 function getFiltered(){
   return rows.filter(r=>{
+   if(currentFilter==="pr") return r.env==="p";
     if(currentFilter==="staging") return r.env==="s";
     if(currentFilter==="prod") return r.env==="b" || r.status==="prod";
     if(currentFilter==="blocked") return r.status==="blocked";
@@ -124,6 +126,7 @@ function render(){
 
 function updateSummary(){
   const total = rows.length;
+  const pr = rows.filter(r=>r.env==="p").length;
   const staging = rows.filter(r=>r.env==="s").length;
   const prod = rows.filter(r=>r.env==="b" || r.status==="prod").length;
   const blocked = rows.filter(r=>r.status==="blocked").length;
@@ -131,6 +134,7 @@ function updateSummary(){
 
   document.getElementById("summary").innerHTML = `
     <div class="card"><div class="num">${total}</div>Total</div>
+    <div class="card"><div class="num">${pr}</div>In PR</div>
     <div class="card"><div class="num">${staging}</div>Staging</div>
     <div class="card"><div class="num">${prod}</div>In Prod</div>
     <div class="card"><div class="num">${blocked}</div>Blocked</div>
